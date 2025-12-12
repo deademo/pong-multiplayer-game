@@ -110,8 +110,13 @@ function setupCanvas() {
     // Set canvas size to maintain 4:3 aspect ratio
     const resizeCanvas = () => {
         const container = canvas.parentElement;
+        if (!container) return;
+        
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
+        
+        // Skip if container has no dimensions (likely hidden)
+        if (containerWidth === 0 || containerHeight === 0) return;
         
         // Calculate size maintaining 4:3 ratio
         let width = containerWidth;
@@ -121,6 +126,10 @@ function setupCanvas() {
             height = containerHeight;
             width = height * (4/3);
         }
+        
+        // Ensure minimum size for visibility
+        if (width < 320) width = 320;
+        if (height < 240) height = 240;
         
         canvas.width = width;
         canvas.height = height;
@@ -248,6 +257,14 @@ function showLobby() {
 
 function showGameScreen() {
     showScreen('game-screen');
+    // Recalculate canvas size now that the container is visible
+    // Without this, canvas stays 0x0 because setupCanvas ran when parent was display:none
+    setTimeout(() => {
+        if (canvas && canvas.parentElement) {
+            const resizeEvent = new Event('resize');
+            window.dispatchEvent(resizeEvent);
+        }
+    }, 0);
 }
 
 function showGameOver() {

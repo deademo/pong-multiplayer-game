@@ -254,24 +254,24 @@
             </div>
         </header>
         
-        <main class="flex-1 flex flex-col items-center justify-center p-4 md:p-8 relative">
-            <div class="flex items-center justify-center gap-16 mb-6 w-full max-w-4xl">
+        <main class="flex-1 flex flex-col items-center justify-center p-2 md:p-4 lg:p-6 relative overflow-auto">
+            <div class="flex items-center justify-center gap-8 md:gap-16 mb-4 md:mb-6 w-full max-w-3xl">
                 <div class="flex flex-col items-center">
                     <span class="text-xs font-bold tracking-[0.2em] text-primary/60 mb-1 uppercase">Player 1</span>
-                    <div id="score-p1" class="text-6xl font-black neon-text tabular-nums">00</div>
+                    <div id="score-p1" class="text-4xl md:text-6xl font-black neon-text tabular-nums">00</div>
                 </div>
-                <div class="h-12 w-px bg-primary/30"></div>
+                <div class="h-8 md:h-12 w-px bg-primary/30"></div>
                 <div class="flex flex-col items-center">
                     <span class="text-xs font-bold tracking-[0.2em] text-primary/60 mb-1 uppercase">Player 2</span>
-                    <div id="score-p2" class="text-6xl font-black neon-text tabular-nums">00</div>
+                    <div id="score-p2" class="text-4xl md:text-6xl font-black neon-text tabular-nums">00</div>
                 </div>
             </div>
             
-            <div class="relative w-full max-w-4xl aspect-[4/3]">
+            <div class="relative w-full max-w-3xl aspect-[4/3]">
                 <canvas id="game-canvas" class="w-full h-full border-[3px] border-primary rounded-lg neon-border bg-[#050b07]"></canvas>
             </div>
             
-            <div class="w-full max-w-4xl mt-6 flex items-center justify-between px-4">
+            <div class="w-full max-w-3xl mt-4 md:mt-6 flex items-center justify-between px-2 md:px-4">
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-medium tracking-wide" id="game-status">Press READY to start</span>
                 </div>
