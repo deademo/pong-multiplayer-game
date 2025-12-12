@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pong Online Main Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#2bee79",
+              "background-light": "#f6f8f7",
+              "background-dark": "#102217",
+            },
+            fontFamily: {
+              "display": ["Be Vietnam Pro", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+            backgroundImage: {
+                'scanlines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .text-glow {
+            text-shadow: 0 0 10px rgba(43, 238, 121, 0.5), 0 0 20px rgba(43, 238, 121, 0.3);
+        }
+        .box-glow {
+            box-shadow: 0 0 15px rgba(43, 238, 121, 0.1);
+        }
+        /* Custom select styling for arrow */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111814] dark:text-white min-h-screen flex flex-col overflow-x-hidden relative selection:bg-primary selection:text-background-dark">
+<!-- Scanline Overlay Effect -->
+<div class="fixed inset-0 z-50 pointer-events-none mix-blend-overlay opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" data-alt="Subtle noise texture for retro CRT effect"></div>
+<div class="fixed inset-0 z-40 pointer-events-none bg-scanlines opacity-20" data-alt="Horizontal scanlines pattern"></div>
+<div class="relative flex flex-col h-full grow z-10">
+<!-- Navbar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#28392f] px-4 md:px-10 py-4 bg-background-dark/95 backdrop-blur-md">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-3xl">sports_tennis</span>
+<h2 class="text-white text-lg font-bold tracking-widest uppercase hidden sm:block">Pong Online</h2>
+</div>
+<div class="flex items-center gap-4 md:gap-6">
+<!-- Status indicator -->
+<div class="flex items-center gap-2 bg-[#1c2720] px-3 py-1.5 rounded-full border border-[#28392f]">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-[10px] md:text-xs font-medium text-[#9db9a8] uppercase tracking-wider">Server Online</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-white text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-white text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Leaderboard</a>
+<a class="text-white text-sm font-bold uppercase tracking-wider hover:text-primary transition-colors" href="#">Settings</a>
+</div>
+<button class="size-10 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/20 hover:border-primary flex items-center justify-center text-primary transition-all">
+<span class="material-symbols-outlined text-lg">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex items-center justify-center p-4 md:p-10 w-full">
+<div class="w-full max-w-[960px] flex flex-col items-center gap-8 md:gap-14">
+<!-- Hero Section -->
+<div class="text-center space-y-4 pt-4 md:pt-0">
+<div class="flex items-center justify-center mb-2">
+<div class="w-16 h-2 bg-primary/20 rounded-full"></div>
+</div>
+<h1 class="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase text-glow leading-none select-none">
+                        Pong <span class="text-primary">Online</span>
+</h1>
+<p class="text-[#9db9a8] text-sm md:text-lg font-medium tracking-[0.2em] uppercase">Multiplayer Retro Arcade</p>
+</div>
+<!-- Game Mode Cards Container -->
+<div class="w-full grid lg:grid-cols-2 gap-6 lg:gap-12 items-start">
+<!-- Create Room Section -->
+<div class="flex flex-col gap-6 bg-[#1c2720]/50 p-6 md:p-8 rounded-xl border border-[#28392f] box-glow hover:border-primary/50 transition-colors duration-300 group h-full">
+<div class="flex items-center justify-between border-b border-[#28392f] pb-4 group-hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3 text-white">
+<div class="bg-primary/20 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined text-2xl">add_circle</span>
+</div>
+<h2 class="text-xl md:text-2xl font-bold uppercase tracking-wide">Host Match</h2>
+</div>
+<span class="bg-[#111814] text-[#9db9a8] text-[10px] font-bold px-2 py-1 rounded border border-[#28392f] uppercase tracking-wider">Public</span>
+</div>
+<div class="space-y-6 flex-1 flex flex-col justify-end">
+<label class="flex flex-col gap-2">
+<span class="text-[#9db9a8] text-xs font-bold uppercase tracking-wider pl-1">Target Score</span>
+<div class="relative group/select">
+<select class="w-full bg-[#111814] text-white border border-[#3b5445] rounded-lg h-14 px-4 pr-12 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer font-display text-lg tracking-wide hover:border-[#4c6b58]">
+<option value="5">5 POINTS</option>
+<option value="20">20 POINTS</option>
+<option value="50">50 POINTS</option>
+<option value="100">100 POINTS</option>
+</select>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#9db9a8] group-hover/select:text-primary transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</label>
+<button class="w-full bg-primary hover:bg-primary/90 text-background-dark h-14 rounded-full font-bold text-lg uppercase tracking-wider transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(43,238,121,0.3)] hover:shadow-[0_0_30px_rgba(43,238,121,0.5)]">
+<span class="material-symbols-outlined">videogame_asset</span>
+                                Create Room
+                            </button>
+</div>
+</div>
+<!-- Join Room Section -->
+<div class="flex flex-col gap-6 bg-[#1c2720]/50 p-6 md:p-8 rounded-xl border border-[#28392f] box-glow hover:border-primary/50 transition-colors duration-300 group h-full">
+<div class="flex items-center justify-between border-b border-[#28392f] pb-4 group-hover:border-primary/30 transition-colors">
+<div class="flex items-center gap-3 text-white">
+<div class="bg-[#28392f] p-2 rounded-lg text-white group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">group_add</span>
+</div>
+<h2 class="text-xl md:text-2xl font-bold uppercase tracking-wide">Join Friend</h2>
+</div>
+<span class="bg-[#111814] text-[#9db9a8] text-[10px] font-bold px-2 py-1 rounded border border-[#28392f] uppercase tracking-wider">Private</span>
+</div>
+<div class="space-y-6 flex-1 flex flex-col justify-end">
+<label class="flex flex-col gap-2">
+<span class="text-[#9db9a8] text-xs font-bold uppercase tracking-wider pl-1">Room Code</span>
+<div class="relative">
+<input class="w-full bg-[#111814] text-white placeholder-[#3b5445] border border-[#3b5445] rounded-lg h-14 px-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all uppercase font-display tracking-[0.2em] text-lg text-center hover:border-[#4c6b58]" placeholder="X Y Z 1 2 3" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#3b5445]">
+<span class="material-symbols-outlined">key</span>
+</div>
+</div>
+</label>
+<button class="w-full bg-transparent hover:bg-primary/10 text-primary border-2 border-primary h-14 rounded-full font-bold text-lg uppercase tracking-wider transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 hover:shadow-[0_0_15px_rgba(43,238,121,0.2)]">
+<span class="material-symbols-outlined">login</span>
+                                Join Game
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Retro Footer -->
+<footer class="py-6 text-center border-t border-[#28392f] bg-background-dark/95 backdrop-blur-sm relative z-20">
+<div class="flex flex-col items-center gap-2">
+<p class="text-primary text-xs font-bold uppercase tracking-[0.3em] animate-pulse">Insert Coin to Start</p>
+<p class="text-[#3b5445] text-[10px] uppercase tracking-wider">© 1972-2024 Pong Online • v1.0.4</p>
+</div>
+</footer>
+</div>
+</body></html>

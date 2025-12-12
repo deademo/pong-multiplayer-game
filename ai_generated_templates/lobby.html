@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Retro Pong - Lobby</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2bee79",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102217",
+                        "surface-dark": "#1a2c22",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem", 
+                        "lg": "2rem", 
+                        "xl": "3rem", 
+                        "full": "9999px"
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom CRT Scanline Effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* CRT Glow for text */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(43, 238, 121, 0.5), 0 0 20px rgba(43, 238, 121, 0.3);
+        }
+        
+        .glow-box {
+            box-shadow: 0 0 15px rgba(43, 238, 121, 0.15), inset 0 0 15px rgba(43, 238, 121, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden relative min-h-screen flex flex-col">
+<!-- CRT Overlay -->
+<div class="scanlines"></div>
+<!-- Header -->
+<header class="relative z-20 flex items-center justify-between border-b border-[#28392f] px-6 py-4 lg:px-10 bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary animate-pulse">
+<span class="material-symbols-outlined" style="font-size: 32px;">sports_esports</span>
+</div>
+<h2 class="text-white text-xl font-black tracking-wider glow-text">RETRO PONG</h2>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center justify-center rounded-full size-10 bg-[#28392f] text-white hover:bg-[#3b5445] transition-colors cursor-pointer">
+<span class="material-symbols-outlined">volume_up</span>
+</button>
+<button class="flex items-center justify-center rounded-full size-10 bg-[#28392f] text-white hover:bg-[#3b5445] transition-colors cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="relative z-20 flex-1 flex flex-col items-center justify-center p-4 w-full max-w-5xl mx-auto">
+<!-- Status Indicator -->
+<div class="text-center mb-12 w-full">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-[0.2em] mb-4">
+                MULTIPLAYER LOBBY
+            </div>
+<h1 class="text-primary tracking-tight text-4xl md:text-6xl font-black leading-tight glow-text animate-pulse-slow">
+                WAITING FOR OPPONENT<span class="animate-bounce inline-block delay-100">.</span><span class="animate-bounce inline-block delay-200">.</span><span class="animate-bounce inline-block delay-300">.</span>
+</h1>
+</div>
+<!-- VS Section -->
+<div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 w-full mb-12">
+<!-- Player 1 (You) -->
+<div class="flex flex-col items-center gap-4">
+<div class="relative">
+<div class="size-32 rounded-full bg-surface-dark border-4 border-primary flex items-center justify-center overflow-hidden glow-box">
+<img alt="Pixel art avatar of a smiling person with sunglasses" class="w-full h-full object-cover opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-300" data-alt="Pixel art avatar of a smiling person with sunglasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRvTliPxy799Wy1_Bo561GsXapj2E-O4GL_ndVeY_shWrhNl4ofGLntet_oUv71gwcYrPHG2qjhKc4nYB8gd3VkIWOel4n6xO2sH2vV-8Tvwb8-7ji5Qhy6BV1MSnE_rTffDFM-aHyf7gQ50mQT-4Zi2UUNiGY6-syVS0lpff-EcBjiTzp7dLq4mel_XfJWFU51jhCr8bpoIBJPuZvgemhcCgSDsfM9ZpRxz61xKcCzLjsL7URZAkTVYPZyJ8hDHW0xn-wdQiE4Zrt"/>
+</div>
+<div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-background-dark text-xs font-bold rounded-full whitespace-nowrap">
+                        YOU
+                    </div>
+</div>
+<div class="text-center">
+<p class="text-white font-bold text-lg tracking-wide">PLAYER 1</p>
+<p class="text-white/50 text-sm font-medium">Ready</p>
+</div>
+</div>
+<!-- VS Badge -->
+<div class="flex flex-col items-center justify-center">
+<span class="text-4xl font-black text-[#28392f] italic select-none">VS</span>
+</div>
+<!-- Player 2 (Empty) -->
+<div class="flex flex-col items-center gap-4 opacity-50">
+<div class="relative">
+<div class="size-32 rounded-full border-4 border-dashed border-white/20 flex items-center justify-center animate-[spin_10s_linear_infinite]">
+<span class="material-symbols-outlined text-4xl text-white/20">question_mark</span>
+</div>
+</div>
+<div class="text-center">
+<p class="text-white/50 font-bold text-lg tracking-wide">PLAYER 2</p>
+<p class="text-white/30 text-sm font-medium">Searching...</p>
+</div>
+</div>
+</div>
+<!-- Room Details Card -->
+<div class="w-full max-w-lg bg-surface-dark border border-[#28392f] rounded-xl p-8 flex flex-col gap-6 shadow-2xl relative overflow-hidden group">
+<!-- Decorative corner accent -->
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full"></div>
+<!-- Room Code -->
+<div class="flex flex-col gap-2">
+<label class="text-white/60 text-xs font-bold tracking-widest uppercase ml-1">Room Access Code</label>
+<div class="flex items-center justify-between bg-background-dark border border-primary/30 rounded-full px-6 py-4 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]">
+<p class="text-primary text-3xl font-mono font-bold tracking-[0.15em] glow-text">XYZ-123</p>
+<button class="text-primary/70 hover:text-primary transition-colors p-2 hover:bg-primary/10 rounded-full">
+<span class="material-symbols-outlined">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Observer Link -->
+<div class="flex flex-col gap-2">
+<label class="text-white/60 text-xs font-bold tracking-widest uppercase ml-1">Spectator Link</label>
+<div class="flex w-full items-stretch rounded-full overflow-hidden border border-[#3b5445] bg-background-dark group-focus-within:border-primary transition-colors">
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-white/80 focus:outline-0 h-12 px-6 text-sm font-mono placeholder:text-white/20" readonly="" value="retropong.gg/watch/xyz-123"/>
+<button class="flex items-center justify-center px-5 bg-[#28392f] hover:bg-primary hover:text-background-dark text-white/70 transition-colors border-l border-[#3b5445]">
+<span class="material-symbols-outlined text-lg">link</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Actions -->
+<footer class="relative z-20 p-6 md:p-10 flex justify-center w-full bg-background-dark border-t border-[#28392f]">
+<div class="flex gap-4 w-full max-w-lg">
+<button class="flex-1 h-14 rounded-full border border-[#3b5445] text-white/60 font-bold hover:bg-white/5 hover:text-white transition-colors uppercase tracking-widest text-sm">
+                Cancel
+            </button>
+<button class="flex-[2] h-14 rounded-full bg-[#1c2e24] text-white/30 font-bold border border-[#28392f] cursor-not-allowed uppercase tracking-widest text-sm flex items-center justify-center gap-2 group" disabled="">
+<span>Waiting for Player 2</span>
+<span class="material-symbols-outlined text-lg animate-spin">sync</span>
+</button>
+</div>
+</footer>
+</body></html>

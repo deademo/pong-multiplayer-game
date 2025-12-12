@@ -1,0 +1,28 @@
+I want to create web game which is basically ping pong game it must to have Backend. I also want people to be able to play together, so it's a maximum two players game, so it basically means multiplayer game. Front-end and back-end should communicate over WebSockets. For a database I want to see Postgres I want to have rooms in this game, which means player can open the game, create a room Thank you. copy invite code or invite link and send it to another one person so they can play together. Nobody else can join the room when two persons are join the room.
+Also game should have another one invite link which will be exclusively for Yeah. observers, not players, so people can see how two players are playing.
+Um... Each match should be up to... Configurable amount of points. By default it's 5 but can be extended to 20, 50 and 100.
+As a graphic style I wanted to be very old style like a black and white with very digital like numbers like like super old retro game
+
+Technical Requirements:
+1. Frontend: Vanilla JavaScript + HTML5 Canvas.
+2. Backend: Python (Django with Django Channels).
+3. Anti-cheat: None required (simple state synchronization).
+4. Controls: Keyboard (W/S or Arrow keys).
+5. Disconnect Handling: None (no reconnection logic required).
+6. Authentication: Anonymous / Guest access only.
+7. Database: PostgreSQL used for storing Match History.
+8. Observers: Unlimited number of observers supported. Observers see exactly what Player 1 sees but cannot control the game.
+9. Audio: Browser Oscillators (generated sound) for retro 8-bit effects.
+10. Deployment: Docker + Docker Compose.
+11. Physics: Ball speed increases per hit; Vertical paddle movement only.
+12. Game Flow: "Ready" button required to start.
+13. Layout: Fixed 4:3 Aspect Ratio (Retro TV style).
+14. Configuration: Points limit selectable via Dropdown in Create Room UI.
+15. Match History UI: None (Backend storage only).
+16. Post-Game: Game ends immediately; "Main Menu" button appears. No rematch option.
+
+Required Screens (Single Page App style):
+1. Main Menu: "Create Room" (with points dropdown), "Join Room" (input code).
+2. Lobby: "Waiting for opponent...", Room Code display, Observer Link display, "Ready" button.
+3. Game Arena: 4:3 Canvas, Scoreboard, Hidden spectator count.
+4. Post-Game: "Game Over", Winner display, Final Score, "Main Menu" button.

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post-Game Summary - Retro Pong</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2bee79",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102217",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* CRT Scanline Effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Subtle Screen Flicker */
+        @keyframes flicker {
+            0% { opacity: 0.98; }
+            5% { opacity: 0.96; }
+            10% { opacity: 0.99; }
+            15% { opacity: 0.97; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            85% { opacity: 0.97; }
+            90% { opacity: 0.99; }
+            95% { opacity: 0.96; }
+            100% { opacity: 0.98; }
+        }
+
+        .crt-flicker {
+            animation: flicker 2s infinite;
+        }
+
+        /* Neon Glow Effects */
+        .text-glow {
+            text-shadow: 0 0 10px rgba(43, 238, 121, 0.4), 0 0 20px rgba(43, 238, 121, 0.2);
+        }
+        
+        .box-glow {
+            box-shadow: 0 0 15px rgba(43, 238, 121, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden selection:bg-primary selection:text-background-dark">
+<div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+<!-- CRT Scanline Overlay -->
+<div class="scanlines"></div>
+<!-- Main Content Container with Flicker -->
+<div class="layout-content-container relative flex flex-col items-center justify-center max-w-[960px] w-full p-4 z-20 crt-flicker">
+<!-- Game Over Header -->
+<div class="flex flex-col items-center gap-6 mb-12 text-center animate-in fade-in zoom-in duration-500">
+<h1 class="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase drop-shadow-xl select-none">
+                    GAME OVER
+                </h1>
+<div class="flex items-center gap-3 px-8 py-3 border border-primary/40 rounded-full bg-background-dark/80 box-glow backdrop-blur-md">
+<span class="material-symbols-outlined text-primary text-3xl animate-bounce">emoji_events</span>
+<p class="text-primary text-xl md:text-2xl font-black tracking-widest uppercase text-glow">
+                        Player 1 Wins!
+                    </p>
+</div>
+</div>
+<!-- Scoreboard -->
+<div class="flex flex-wrap items-center justify-center gap-8 md:gap-20 mb-16 w-full">
+<!-- Player 1 (Winner) -->
+<div class="flex flex-col items-center gap-4 group scale-110 transform transition-transform duration-500 hover:scale-115">
+<div class="relative flex items-center justify-center w-36 h-36 md:w-48 md:h-48 rounded-2xl bg-background-dark border-[3px] border-primary shadow-[0_0_40px_rgba(43,238,121,0.25)]">
+<p class="text-7xl md:text-9xl font-black text-primary text-glow leading-none pt-2">5</p>
+<!-- Winner Badge -->
+<div class="absolute -top-4 -right-4 bg-primary text-background-dark p-2 rounded-full border-4 border-background-dark shadow-lg">
+<span class="material-symbols-outlined text-xl font-black block">star</span>
+</div>
+</div>
+<p class="text-primary font-bold tracking-[0.2em] text-sm md:text-base uppercase bg-primary/10 px-4 py-1 rounded-full">Player 1</p>
+</div>
+<!-- Retro "VS" Divider -->
+<div class="flex flex-col items-center gap-1 opacity-30">
+<div class="h-12 w-1 bg-white rounded-full"></div>
+<span class="text-xs font-bold tracking-widest">VS</span>
+<div class="h-12 w-1 bg-white rounded-full"></div>
+</div>
+<!-- Player 2 (Loser) -->
+<div class="flex flex-col items-center gap-4 opacity-50 transition-opacity duration-300 hover:opacity-80">
+<div class="flex items-center justify-center w-36 h-36 md:w-48 md:h-48 rounded-2xl bg-background-dark border-[3px] border-white/20">
+<p class="text-7xl md:text-9xl font-black text-white/40 leading-none pt-2">3</p>
+</div>
+<p class="text-white/60 font-bold tracking-[0.2em] text-sm md:text-base uppercase bg-white/5 px-4 py-1 rounded-full">Player 2</p>
+</div>
+</div>
+<!-- Main Menu Button -->
+<div class="flex justify-center w-full z-30">
+<button class="group relative flex w-full max-w-[320px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-16 bg-primary text-background-dark shadow-[0_0_20px_rgba(43,238,121,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(43,238,121,0.6)] active:scale-95 border-2 border-primary">
+<div class="absolute inset-0 bg-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+<span class="material-symbols-outlined mr-3 text-3xl group-hover:-translate-x-1 transition-transform">videogame_asset</span>
+<span class="text-lg font-black tracking-[0.15em] uppercase group-hover:translate-x-1 transition-transform">Main Menu</span>
+</button>
+</div>
+<!-- Decorative Footer Info -->
+<div class="mt-16 flex flex-col items-center gap-3 opacity-30 select-none">
+<p class="text-xs tracking-[0.3em] font-bold text-center uppercase animate-pulse">Insert Coin</p>
+<div class="flex gap-4 text-[10px] tracking-widest font-mono">
+<span class="text-primary">CREDITS 0</span>
+<span class="text-white">|</span>
+<span class="text-white">HIGHSCORE 12400</span>
+</div>
+</div>
+</div>
+<!-- Background Decor (Abstract Pong Net & Grid) -->
+<div class="absolute inset-0 pointer-events-none z-0 flex justify-center opacity-[0.03]">
+<!-- Center line -->
+<div class="h-full w-[2px] border-r-[4px] border-dashed border-white"></div>
+</div>
+<!-- Radial Gradient for CRT Vignette Feel -->
+<div class="absolute inset-0 pointer-events-none z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(16,34,23,0.4)_70%,rgba(16,34,23,0.9)_100%)]"></div>
+</div>
+</body></html>
