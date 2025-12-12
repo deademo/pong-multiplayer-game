@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Pong Online - Retro Multiplayer</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2bee79",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102217",
+                        "surface-dark": "#1a2c22",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                    backgroundImage: {
+                        'scanlines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                    },
+                    boxShadow: {
+                        'neon': '0 0 10px rgba(43, 238, 121, 0.5), 0 0 20px rgba(43, 238, 121, 0.3)',
+                        'neon-sm': '0 0 5px rgba(43, 238, 121, 0.5)',
+                        'crt': 'inset 0 0 100px rgba(0,0,0,0.9)',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .text-glow {
+            text-shadow: 0 0 10px rgba(43, 238, 121, 0.5), 0 0 20px rgba(43, 238, 121, 0.3);
+        }
+        .box-glow {
+            box-shadow: 0 0 15px rgba(43, 238, 121, 0.1);
+        }
+        .neon-text {
+            text-shadow: 0 0 5px rgba(43, 238, 121, 0.7), 0 0 10px rgba(43, 238, 121, 0.5);
+        }
+        .neon-border {
+            box-shadow: 0 0 10px rgba(43, 238, 121, 0.4), inset 0 0 10px rgba(43, 238, 121, 0.2);
+        }
+        .neon-obj {
+            box-shadow: 0 0 8px rgba(43, 238, 121, 0.8);
+        }
+        .center-line {
+            background-image: linear-gradient(to bottom, #2bee79 60%, transparent 40%);
+            background-size: 2px 20px;
+            background-repeat: repeat-y;
+        }
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111814] dark:text-white min-h-screen flex flex-col overflow-x-hidden relative selection:bg-primary selection:text-background-dark">
+
+<!-- Scanline Overlay Effect -->
+<div class="fixed inset-0 z-50 pointer-events-none mix-blend-overlay opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+<div class="fixed inset-0 z-40 pointer-events-none bg-scanlines opacity-20"></div>
+
+<!-- MAIN MENU SCREEN -->
+<div id="main-menu" class="relative flex flex-col h-full grow z-10">
+    <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#28392f] px-4 md:px-10 py-4 bg-background-dark/95 backdrop-blur-md">
+        <div class="flex items-center gap-3 text-primary">
+            <span class="material-symbols-outlined text-3xl">sports_tennis</span>
+            <h2 class="text-white text-lg font-bold tracking-widest uppercase hidden sm:block">Pong Online</h2>
+        </div>
+        <div class="flex items-center gap-4 md:gap-6">
+            <div class="flex items-center gap-2 bg-[#1c2720] px-3 py-1.5 rounded-full border border-[#28392f]">
+                <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                <span class="text-[10px] md:text-xs font-medium text-[#9db9a8] uppercase tracking-wider">Server Online</span>
+            </div>
+        </div>
+    </header>
+    
+    <main class="flex-1 flex items-center justify-center p-4 md:p-10 w-full">
+        <div class="w-full max-w-[960px] flex flex-col items-center gap-8 md:gap-14">
+            <div class="text-center space-y-4 pt-4 md:pt-0">
+                <h1 class="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase text-glow leading-none select-none">
+                    Pong <span class="text-primary">Online</span>
+                </h1>
+                <p class="text-[#9db9a8] text-sm md:text-lg font-medium tracking-[0.2em] uppercase">Multiplayer Retro Arcade</p>
+            </div>
+            
+            <div class="w-full grid lg:grid-cols-2 gap-6 lg:gap-12 items-start">
+                <!-- Create Room -->
+                <div class="flex flex-col gap-6 bg-[#1c2720]/50 p-6 md:p-8 rounded-xl border border-[#28392f] box-glow hover:border-primary/50 transition-colors duration-300 group h-full">
+                    <div class="flex items-center justify-between border-b border-[#28392f] pb-4">
+                        <div class="flex items-center gap-3 text-white">
+                            <div class="bg-primary/20 p-2 rounded-lg text-primary">
+                                <span class="material-symbols-outlined text-2xl">add_circle</span>
+                            </div>
+                            <h2 class="text-xl md:text-2xl font-bold uppercase tracking-wide">Host Match</h2>
+                        </div>
+                    </div>
+                    <div class="space-y-6 flex-1 flex flex-col justify-end">
+                        <label class="flex flex-col gap-2">
+                            <span class="text-[#9db9a8] text-xs font-bold uppercase tracking-wider pl-1">Target Score</span>
+                            <select id="points-select" class="w-full bg-[#111814] text-white border border-[#3b5445] rounded-lg h-14 px-4 pr-12 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer font-display text-lg tracking-wide hover:border-[#4c6b58]">
+                                <option value="5">5 POINTS</option>
+                                <option value="20">20 POINTS</option>
+                                <option value="50">50 POINTS</option>
+                                <option value="100">100 POINTS</option>
+                            </select>
+                        </label>
+                        <button id="create-room-btn" class="w-full bg-primary hover:bg-primary/90 text-background-dark h-14 rounded-full font-bold text-lg uppercase tracking-wider transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(43,238,121,0.3)] hover:shadow-[0_0_30px_rgba(43,238,121,0.5)]">
+                            <span class="material-symbols-outlined">videogame_asset</span>
+                            Create Room
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Join Room -->
+                <div class="flex flex-col gap-6 bg-[#1c2720]/50 p-6 md:p-8 rounded-xl border border-[#28392f] box-glow hover:border-primary/50 transition-colors duration-300 group h-full">
+                    <div class="flex items-center justify-between border-b border-[#28392f] pb-4">
+                        <div class="flex items-center gap-3 text-white">
+                            <div class="bg-[#28392f] p-2 rounded-lg text-white group-hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined text-2xl">group_add</span>
+                            </div>
+                            <h2 class="text-xl md:text-2xl font-bold uppercase tracking-wide">Join Friend</h2>
+                        </div>
+                    </div>
+                    <div class="space-y-6 flex-1 flex flex-col justify-end">
+                        <label class="flex flex-col gap-2">
+                            <span class="text-[#9db9a8] text-xs font-bold uppercase tracking-wider pl-1">Room Code</span>
+                            <input id="room-code-input" class="w-full bg-[#111814] text-white placeholder-[#3b5445] border border-[#3b5445] rounded-lg h-14 px-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all uppercase font-display tracking-[0.2em] text-lg text-center hover:border-[#4c6b58]" placeholder="ABCDEF" type="text"/>
+                        </label>
+                        <button id="join-room-btn" class="w-full bg-transparent hover:bg-primary/10 text-primary border-2 border-primary h-14 rounded-full font-bold text-lg uppercase tracking-wider transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 hover:shadow-[0_0_15px_rgba(43,238,121,0.2)]">
+                            <span class="material-symbols-outlined">login</span>
+                            Join Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- LOBBY SCREEN -->
+<div id="lobby" class="hidden relative z-20 flex flex-col h-screen">
+    <div class="scanlines"></div>
+    
+    <header class="relative z-20 flex items-center justify-between border-b border-[#28392f] px-6 py-4 lg:px-10 bg-background-dark/80 backdrop-blur-sm">
+        <div class="flex items-center gap-4 text-white">
+            <span class="material-symbols-outlined text-primary animate-pulse" style="font-size: 32px;">sports_esports</span>
+            <h2 class="text-white text-xl font-black tracking-wider glow-text">RETRO PONG</h2>
+        </div>
+    </header>
+    
+    <main class="relative z-20 flex-1 flex flex-col items-center justify-center p-4 w-full max-w-5xl mx-auto">
+        <div class="text-center mb-12 w-full">
+            <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold tracking-[0.2em] mb-4">
+                MULTIPLAYER LOBBY
+            </div>
+            <h1 id="lobby-status" class="text-primary tracking-tight text-4xl md:text-6xl font-black leading-tight glow-text animate-pulse-slow">
+                WAITING FOR OPPONENT...
+            </h1>
+        </div>
+        
+        <div class="w-full max-w-lg bg-surface-dark border border-[#28392f] rounded-xl p-8 flex flex-col gap-6 shadow-2xl relative overflow-hidden">
+            <div class="flex flex-col gap-2">
+                <label class="text-white/60 text-xs font-bold tracking-widest uppercase ml-1">Room Access Code</label>
+                <div class="flex items-center justify-between bg-background-dark border border-primary/30 rounded-full px-6 py-4">
+                    <p id="lobby-room-code" class="text-primary text-3xl font-mono font-bold tracking-[0.15em] glow-text">------</p>
+                    <button id="copy-code-btn" class="text-primary/70 hover:text-primary transition-colors p-2 hover:bg-primary/10 rounded-full">
+                        <span class="material-symbols-outlined">content_copy</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-2">
+                <label class="text-white/60 text-xs font-bold tracking-widest uppercase ml-1">Player Link</label>
+                <div class="flex w-full items-stretch rounded-full overflow-hidden border border-[#3b5445] bg-background-dark">
+                    <input id="player-link" class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-white/80 focus:outline-0 h-12 px-6 text-sm font-mono" readonly/>
+                    <button id="copy-player-link-btn" class="flex items-center justify-center px-5 bg-[#28392f] hover:bg-primary hover:text-background-dark text-white/70 transition-colors">
+                        <span class="material-symbols-outlined text-lg">link</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-2">
+                <label class="text-white/60 text-xs font-bold tracking-widest uppercase ml-1">Spectator Link</label>
+                <div class="flex w-full items-stretch rounded-full overflow-hidden border border-[#3b5445] bg-background-dark">
+                    <input id="observer-link" class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-white/80 focus:outline-0 h-12 px-6 text-sm font-mono" readonly/>
+                    <button id="copy-observer-link-btn" class="flex items-center justify-center px-5 bg-[#28392f] hover:bg-primary hover:text-background-dark text-white/70 transition-colors">
+                        <span class="material-symbols-outlined text-lg">link</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="relative z-20 p-6 md:p-10 flex justify-center w-full bg-background-dark border-t border-[#28392f]">
+        <div class="flex gap-4 w-full max-w-lg">
+            <button id="cancel-lobby-btn" class="flex-1 h-14 rounded-full border border-[#3b5445] text-white/60 font-bold hover:bg-white/5 hover:text-white transition-colors uppercase tracking-widest text-sm">
+                Cancel
+            </button>
+            <button id="ready-btn" class="flex-[2] h-14 rounded-full bg-primary text-background-dark font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:bg-[#1c2e24] disabled:text-white/30 disabled:border disabled:border-[#28392f] disabled:cursor-not-allowed">
+                <span>Ready</span>
+            </button>
+        </div>
+    </footer>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="game-screen" class="hidden bg-background-dark font-display h-screen flex flex-col overflow-hidden text-primary">
+    <div class="absolute inset-0 z-50 pointer-events-none bg-scanlines mix-blend-overlay opacity-30"></div>
+    <div class="absolute inset-0 z-40 pointer-events-none shadow-crt"></div>
+    
+    <div class="relative z-10 flex flex-col h-full w-full">
+        <header class="flex items-center justify-between px-8 py-5 border-b border-primary/20 bg-background-dark/80 backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary !text-[32px] neon-text">videogame_asset</span>
+                <h1 class="text-2xl font-bold tracking-wider neon-text uppercase">Pong Arena</h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-2 text-primary/70 text-sm font-medium">
+                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    <span>LIVE</span>
+                </div>
+            </div>
+        </header>
+        
+        <main class="flex-1 flex flex-col items-center justify-center p-4 md:p-8 relative">
+            <div class="flex items-center justify-center gap-16 mb-6 w-full max-w-4xl">
+                <div class="flex flex-col items-center">
+                    <span class="text-xs font-bold tracking-[0.2em] text-primary/60 mb-1 uppercase">Player 1</span>
+                    <div id="score-p1" class="text-6xl font-black neon-text tabular-nums">00</div>
+                </div>
+                <div class="h-12 w-px bg-primary/30"></div>
+                <div class="flex flex-col items-center">
+                    <span class="text-xs font-bold tracking-[0.2em] text-primary/60 mb-1 uppercase">Player 2</span>
+                    <div id="score-p2" class="text-6xl font-black neon-text tabular-nums">00</div>
+                </div>
+            </div>
+            
+            <div class="relative w-full max-w-4xl aspect-[4/3]">
+                <canvas id="game-canvas" class="w-full h-full border-[3px] border-primary rounded-lg neon-border bg-[#050b07]"></canvas>
+            </div>
+            
+            <div class="w-full max-w-4xl mt-6 flex items-center justify-between px-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium tracking-wide" id="game-status">Press READY to start</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="exit-game-btn" class="p-2 rounded-full hover:bg-red-500/20 text-primary hover:text-red-400 transition-colors">
+                        <span class="material-symbols-outlined">logout</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div id="game-over" class="hidden bg-background-dark font-display text-white overflow-hidden">
+    <div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+        <div class="scanlines"></div>
+        
+        <div class="relative z-20 flex flex-col items-center justify-center max-w-[960px] w-full p-4">
+            <div class="flex flex-col items-center gap-6 mb-12 text-center">
+                <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase">GAME OVER</h1>
+                <div class="flex items-center gap-3 px-8 py-3 border border-primary/40 rounded-full bg-background-dark/80 box-glow backdrop-blur-md">
+                    <span class="material-symbols-outlined text-primary text-3xl">emoji_events</span>
+                    <p id="winner-text" class="text-primary text-xl md:text-2xl font-black tracking-widest uppercase text-glow">
+                        Player 1 Wins!
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center justify-center gap-8 md:gap-20 mb-16 w-full">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative flex items-center justify-center w-36 h-36 md:w-48 md:h-48 rounded-2xl bg-background-dark border-[3px] border-primary shadow-[0_0_40px_rgba(43,238,121,0.25)]">
+                        <p id="final-score-p1" class="text-7xl md:text-9xl font-black text-primary text-glow leading-none">5</p>
+                        <div id="winner-badge-p1" class="hidden absolute -top-4 -right-4 bg-primary text-background-dark p-2 rounded-full border-4 border-background-dark">
+                            <span class="material-symbols-outlined text-xl font-black">star</span>
+                        </div>
+                    </div>
+                    <p class="text-primary font-bold tracking-[0.2em] text-sm uppercase">Player 1</p>
+                </div>
+                
+                <div class="flex flex-col items-center gap-1 opacity-30">
+                    <span class="text-xs font-bold tracking-widest">VS</span>
+                </div>
+                
+                <div class="flex flex-col items-center gap-4">
+                    <div class="relative flex items-center justify-center w-36 h-36 md:w-48 md:h-48 rounded-2xl bg-background-dark border-[3px] border-white/20">
+                        <p id="final-score-p2" class="text-7xl md:text-9xl font-black text-white/40 leading-none">3</p>
+                        <div id="winner-badge-p2" class="hidden absolute -top-4 -right-4 bg-primary text-background-dark p-2 rounded-full border-4 border-background-dark">
+                            <span class="material-symbols-outlined text-xl font-black">star</span>
+                        </div>
+                    </div>
+                    <p class="text-white/60 font-bold tracking-[0.2em] text-sm uppercase">Player 2</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-center w-full z-30">
+                <button id="main-menu-btn" class="flex w-full max-w-[320px] items-center justify-center overflow-hidden rounded-full h-16 bg-primary text-background-dark shadow-[0_0_20px_rgba(43,238,121,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_50px_rgba(43,238,121,0.6)] active:scale-95 border-2 border-primary">
+                    <span class="material-symbols-outlined mr-3 text-3xl">videogame_asset</span>
+                    <span class="text-lg font-black tracking-[0.15em] uppercase">Main Menu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/static/game.js"></script>
+</body>
+</html>

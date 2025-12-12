@@ -1,0 +1,19 @@
+{
+  "name": "pong-frontend-tests",
+  "version": "1.0.0",
+  "description": "Frontend unit tests for Pong Online game",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@vitest/ui": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.8",
+    "vitest": "^2.1.8",
+    "jsdom": "^25.0.1",
+    "ws": "^8.18.0"
+  }
+}

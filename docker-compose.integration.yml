@@ -1,0 +1,65 @@
+# Docker Compose configuration for Integration Testing
+# This environment uses Redis for proper channel layer testing
+
+services:
+  db-test:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: pong_test
+      POSTGRES_USER: pong_test
+      POSTGRES_PASSWORD: testpassword
+    tmpfs:
+      - /var/lib/postgresql/data  # Use tmpfs for faster tests
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pong_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    networks:
+      - test-network
+
+  redis-test:
+    image: redis:8-alpine
+    command: redis-server --save "" --appendonly no  # Disable persistence for speed
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    networks:
+      - test-network
+
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+      python manage.py migrate --noinput &&
+      pytest tests/integration/ -v --tb=short --color=yes
+      "
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - POSTGRES_DB=pong_test
+      - POSTGRES_USER=pong_test
+      - POSTGRES_PASSWORD=testpassword
+      - POSTGRES_HOST=db-test
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis-test:6379/0
+      - TESTING=true
+      - PYTHONUNBUFFERED=1
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

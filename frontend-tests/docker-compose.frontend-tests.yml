@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  frontend-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./tests:/app/tests
+      - ../backend/static:/app/backend/static
+      - ./coverage:/app/coverage
+    environment:
+      - NODE_ENV=test
+    command: npm test

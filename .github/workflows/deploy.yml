@@ -1,0 +1,143 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+      
+      - name: Deploy to VM
+        env:
+          SSH_IP: ${{ secrets.SSH_IP }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "${SSH_PASSWORD}" ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_IP} << 'ENDSSH'
+            set -e
+            
+            echo "=== Starting Deployment ==="
+            
+            # Install Docker if not already installed
+            if ! command -v docker &> /dev/null; then
+              echo "Installing Docker..."
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+              systemctl enable docker
+              systemctl start docker
+            else
+              echo "Docker already installed"
+            fi
+            
+            # Install Docker Compose if not present
+            if ! command -v docker-compose &> /dev/null; then
+              echo "Installing Docker Compose..."
+              curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose
+            else
+              echo "Docker Compose already installed"
+            fi
+            
+            # Install git if not present
+            if ! command -v git &> /dev/null; then
+              echo "Installing git..."
+              apt-get update && apt-get install -y git
+            else
+              echo "Git already installed"
+            fi
+            
+            # Create deployment directory
+            echo "Setting up deployment directory..."
+            mkdir -p /opt/pong-game
+            cd /opt/pong-game
+            
+            # Clone or update repository
+            if [ -d .git ]; then
+              echo "Updating existing repository..."
+              git fetch origin
+              git reset --hard origin/main
+              git clean -fd
+            else
+              echo "Cloning repository..."
+              git clone https://github.com/deademo/pong-multiplayer-game.git .
+            fi
+            
+            # Stop existing containers
+            echo "Stopping existing containers..."
+            docker-compose down || true
+            
+            # Remove old images to ensure fresh build
+            echo "Cleaning up old Docker images..."
+            docker-compose down --rmi local || true
+            
+            # Build services
+            echo "Building Docker images..."
+            docker-compose build --no-cache
+            
+            # Start services
+            echo "Starting services..."
+            docker-compose up -d
+            
+            # Wait for services to be ready
+            echo "Waiting for services to start..."
+            sleep 20
+            
+            # Run migrations
+            echo "Running database migrations..."
+            docker-compose run --rm backend python manage.py migrate --noinput
+            
+            # Check service status
+            echo ""
+            echo "=== Service Status ==="
+            docker-compose ps
+            
+            echo ""
+            echo "=== Deployment Complete ==="
+          ENDSSH
+      
+      - name: Verify deployment
+        env:
+          SSH_IP: ${{ secrets.SSH_IP }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          echo "Waiting 10 seconds before verification..."
+          sleep 10
+          
+          sshpass -p "${SSH_PASSWORD}" ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_IP} << 'ENDSSH'
+            cd /opt/pong-game
+            
+            echo "=== Verifying Deployment ==="
+            echo ""
+            
+            echo "=== Docker Containers ==="
+            docker-compose ps
+            echo ""
+            
+            echo "=== Backend Logs (last 30 lines) ==="
+            docker-compose logs --tail=30 backend
+            echo ""
+            
+            echo "=== Testing HTTP Endpoint ==="
+            sleep 5
+            curl -I http://localhost:8000/ 2>&1 || echo "HTTP endpoint not yet ready"
+            echo ""
+            
+            echo "=== Container Health ==="
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+            echo ""
+            
+            echo "=== Verification Complete ==="
+          ENDSSH

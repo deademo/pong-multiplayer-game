@@ -1,0 +1,92 @@
+# Docker Compose for Integration Testing with Real Daphne Server
+# This setup runs a real Daphne server and tests against it to avoid event loop conflicts
+
+services:
+  db-test:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: pong_test
+      POSTGRES_USER: pong_test
+      POSTGRES_PASSWORD: testpassword
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pong_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    networks:
+      - test-network
+
+  redis-test:
+    image: redis:8-alpine
+    command: redis-server --save "" --appendonly no
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+    networks:
+      - test-network
+
+  daphne-server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+      python manage.py migrate --noinput &&
+      daphne -b 0.0.0.0 -p 8000 config.asgi:application
+      "
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8001:8000"  # Expose on different port to avoid conflicts
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - POSTGRES_DB=pong_test
+      - POSTGRES_USER=pong_test
+      - POSTGRES_PASSWORD=testpassword
+      - POSTGRES_HOST=db-test
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis-test:6379/0
+      - PYTHONUNBUFFERED=1
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s = socket.socket(); s.connect(('localhost', 8000)); s.close()"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+
+  test-client:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+      echo 'Waiting for Daphne server to be ready...' &&
+      sleep 5 &&
+      pytest tests/integration/test_real_server.py -v -m integration_real_server --tb=short --color=yes
+      "
+    volumes:
+      - ./backend:/app
+    depends_on:
+      daphne-server:
+        condition: service_healthy
+    environment:
+      - SERVER_URL=ws://daphne-server:8000
+      - PYTHONUNBUFFERED=1
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

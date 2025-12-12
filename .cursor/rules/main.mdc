@@ -1,0 +1,10 @@
+---
+globs:
+alwaysApply: true
+---
+
+You have experience of previous LLM models. All the expericnce written into context files in the root
+folder called "context". So search or read context/*.md files in order to get some answers and experience of previous LLMS. Use context files frequently because it will make you make much less mistakes.
+
+You also have access to internet, so search internet when you face any problem. It's important because
+your knowledge might be outdates, so use it frequently.
