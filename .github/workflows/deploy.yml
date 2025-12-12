@@ -60,19 +60,22 @@ jobs:
             
             # Create deployment directory
             echo "Setting up deployment directory..."
+            
+            # Clean up any existing deployment
+            if [ -d /opt/pong-game ]; then
+              echo "Removing old deployment directory..."
+              rm -rf /opt/pong-game
+            fi
+            
             mkdir -p /opt/pong-game
             cd /opt/pong-game
             
-            # Clone or update repository
-            if [ -d .git ]; then
-              echo "Updating existing repository..."
-              git fetch origin
-              git reset --hard origin/main
-              git clean -fd
-            else
-              echo "Cloning repository..."
-              git clone https://github.com/deademo/pong-multiplayer-game.git .
-            fi
+            # Clone repository (public repo, no auth needed)
+            echo "Cloning repository..."
+            git clone https://github.com/deademo/pong-multiplayer-game.git .
+            
+            echo "Repository cloned successfully!"
+            ls -la
             
             # Stop existing containers
             echo "Stopping existing containers..."
